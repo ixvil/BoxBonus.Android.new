@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.materialdesigncodelab;
+package com.example.android.materialdesigncodelab.Activities;
 
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -24,6 +24,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.android.materialdesigncodelab.R;
 
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.

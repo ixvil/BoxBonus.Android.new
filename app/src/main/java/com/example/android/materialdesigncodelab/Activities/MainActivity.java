@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.materialdesigncodelab;
+package com.example.android.materialdesigncodelab.Activities;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -35,6 +35,11 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import com.example.android.materialdesigncodelab.Fragments.CardContentFragment;
+import com.example.android.materialdesigncodelab.Fragments.ListContentFragment;
+import com.example.android.materialdesigncodelab.R;
+import com.example.android.materialdesigncodelab.Fragments.TileContentFragment;
 
 import java.util.ArrayList;
 import java.util.List;
