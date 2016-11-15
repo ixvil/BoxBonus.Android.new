@@ -16,6 +16,7 @@
 
 package com.example.android.materialdesigncodelab.Activities;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -37,6 +38,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.example.android.materialdesigncodelab.Fragments.CardContentFragment;
+import com.example.android.materialdesigncodelab.Fragments.HomeFragment;
 import com.example.android.materialdesigncodelab.Fragments.ListContentFragment;
 import com.example.android.materialdesigncodelab.R;
 import com.example.android.materialdesigncodelab.Fragments.TileContentFragment;
@@ -48,7 +50,7 @@ import java.util.List;
 /**
  * Provides UI for the main screen.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements HomeFragment.OnFragmentInteractionListener {
 
     private DrawerLayout mDrawerLayout;
 
@@ -73,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         if (supportActionBar != null) {
             VectorDrawableCompat indicator
                     = VectorDrawableCompat.create(getResources(), R.drawable.ic_menu, getTheme());
-            indicator.setTint(ResourcesCompat.getColor(getResources(),R.color.white,getTheme()));
+            indicator.setTint(ResourcesCompat.getColor(getResources(), R.color.white, getTheme()));
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
@@ -107,10 +109,16 @@ public class MainActivity extends AppCompatActivity {
     // Add Fragments to Tabs
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
-        adapter.addFragment(new ListContentFragment(), "List");
-        adapter.addFragment(new TileContentFragment(), "Tile");
-        adapter.addFragment(new CardContentFragment(), "Card");
+        adapter.addFragment(new HomeFragment(), getString(R.string.tab_title_home));
+        adapter.addFragment(new ListContentFragment(), getString(R.string.tab_title_news));
+        adapter.addFragment(new TileContentFragment(), getString(R.string.tab_title_shops));
+        adapter.addFragment(new CardContentFragment(), getString(R.string.tab_title_gifts));
         viewPager.setAdapter(adapter);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 
     static class Adapter extends FragmentPagerAdapter {
