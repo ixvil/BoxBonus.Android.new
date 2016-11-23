@@ -7,7 +7,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
+import com.example.android.materialdesigncodelab.Models.Wallet;
 import com.example.android.materialdesigncodelab.R;
 
 /**
@@ -59,13 +61,20 @@ public class HomeFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View mainView = inflater.inflate(R.layout.fragment_home, container, false);
+
+        ImageView qrImageView = (ImageView) mainView.findViewById(R.id.card_home_image);
+        int pic_height = (int) getResources().getDimension(R.dimen.pic_height);
+        qrImageView.setImageBitmap(Wallet.getQr(pic_height, pic_height));
+
+        return mainView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event

@@ -105,6 +105,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                         return true;
                     }
                 });
+
         // Adding Floating Action Button to bottom right of main view
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {

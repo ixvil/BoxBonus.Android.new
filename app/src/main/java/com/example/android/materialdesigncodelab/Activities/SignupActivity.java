@@ -1,9 +1,15 @@
 package com.example.android.materialdesigncodelab.Activities;
 
+import android.annotation.TargetApi;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.test.espresso.core.deps.guava.hash.Hashing;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.PhoneNumberUtils;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +18,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.R;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
@@ -19,12 +31,6 @@ import butterknife.Bind;
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
-    @Bind(R.id.input_name)
-    EditText _nameText;
-    @Bind(R.id.input_address)
-    EditText _addressText;
-    @Bind(R.id.input_email)
-    EditText _emailText;
     @Bind(R.id.input_mobile)
     EditText _mobileText;
     @Bind(R.id.input_password)
@@ -59,8 +65,51 @@ public class SignupActivity extends AppCompatActivity {
                 overridePendingTransition(R.anim.push_left_in, R.anim.push_left_out);
             }
         });
+
+        _mobileText.addTextChangedListener(
+                new TextWatcher() {
+                    boolean ignoreChange = false;
+                    EditText phoneTextView = (EditText) findViewById(R.id.input_mobile);
+
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+                            /**
+                             * TODO: implement custom phone validation
+                             * */
+                            if (!ignoreChange) {
+                                ignoreChange = true;
+                                String number = charSequence.toString().replace("+", "");
+                                number = "+" + number;
+
+                                String formattedNumber = PhoneNumberUtils.formatNumber(
+                                        number,
+                                        Locale.getDefault().getISO3Country()
+                                );
+
+                                if (formattedNumber != null) {
+                                    phoneTextView.setText(formattedNumber);
+                                    phoneTextView.setSelection(phoneTextView.getText().length());
+                                }
+                                ignoreChange = false;
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                    }
+                }
+        );
+        _mobileText.setSelection(_mobileText.getText().length());
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     public void signup() {
         Log.d(TAG, "Signup");
 
@@ -71,31 +120,65 @@ public class SignupActivity extends AppCompatActivity {
 
         _signupButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.AppTheme_Base);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("Creating Account...");
-        progressDialog.show();
+//        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
+//                R.style.AppTheme_Base);
+//        progressDialog.setIndeterminate(true);
+//        progressDialog.setMessage("Creating Account...");
+//        progressDialog.show();
 
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
-        String email = _emailText.getText().toString();
         String mobile = _mobileText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        // TODO: Implement your own signup logic here.
+        if (!reEnterPassword.equals(password)) {
+            onSignupFailed();
+            return;
+        }
 
-        new android.os.Handler().postDelayed(
-                new Runnable() {
-                    public void run() {
-                        // On complete call either onSignupSuccess or onSignupFailed
-                        // depending on success
-                        onSignupSuccess();
-                        // onSignupFailed();
-                        progressDialog.dismiss();
-                    }
-                }, 3000);
+        try {
+            final String mPassword = Hashing.sha256()
+                    .hashString(password, StandardCharsets.UTF_8)
+                    .toString();
+            Ion.with(getApplicationContext())
+                    .load(getResources().getString(R.string.hostname) + "json/register")
+                    .setMultipartParameter("email", mobile)
+                    .setMultipartParameter("password", Hashing.sha256()
+                            .hashString(password, StandardCharsets.UTF_8)
+                            .toString())
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            if (e == null) {
+//                                progressDialog.dismiss();
+                                JsonObject userJson = result.getAsJsonObject("data");
+                                int userId = userJson.get("id").getAsInt();
+                                if (0 != userId) {
+                                    onSignupSuccess();
+//                                    User user = User.createUserFromJson(userJson, getApplicationContext());
+//                                    user.saveToAccountManager(email, mPassword);
+//                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                                    startActivity(intent);
+
+                                } else {
+//                                    User.userId = 0;
+//
+                                    _mobileText.setError(userJson.get("message").getAsString());
+                                    _mobileText.requestFocus();
+//                                    showProgress(false);
+                                }
+                            } else {
+                                _mobileText.setError(e.getMessage().toString());
+                                _mobileText.requestFocus();
+                            }
+                        }
+
+                    });
+        } catch (Exception e) {
+            _mobileText.setError(e.getMessage().toString());
+            _mobileText.requestFocus();
+
+        }
     }
 
 
@@ -114,36 +197,11 @@ public class SignupActivity extends AppCompatActivity {
     public boolean validate() {
         boolean valid = true;
 
-        String name = _nameText.getText().toString();
-        String address = _addressText.getText().toString();
-        String email = _emailText.getText().toString();
         String mobile = _mobileText.getText().toString();
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        if (name.isEmpty() || name.length() < 3) {
-            _nameText.setError("at least 3 characters");
-            valid = false;
-        } else {
-            _nameText.setError(null);
-        }
-
-        if (address.isEmpty()) {
-            _addressText.setError("Enter Valid Address");
-            valid = false;
-        } else {
-            _addressText.setError(null);
-        }
-
-
-        if (email.isEmpty() || !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            _emailText.setError("enter a valid email address");
-            valid = false;
-        } else {
-            _emailText.setError(null);
-        }
-
-        if (mobile.isEmpty() || mobile.length() != 10) {
+        if (mobile.isEmpty() || mobile.length() != 16) {
             _mobileText.setError("Enter Valid Mobile Number");
             valid = false;
         } else {
