@@ -13,7 +13,8 @@
   ~ See the License for the specific language governing permissions and
   ~ limitations under the License.
   -->
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
             android:icon="@drawable/ic_home_black_24dp"
@@ -42,6 +43,7 @@
             android:tint="@color/button_grey"
             android:title="@string/tab_title_profile" />
         <item
+            android:id="@+id/navigation_button_sign_out"
             android:icon="@drawable/ic_keyboard_return_black_24dp"
             android:tint="@color/button_grey"
             android:title="@string/tab_title_sing_out" />

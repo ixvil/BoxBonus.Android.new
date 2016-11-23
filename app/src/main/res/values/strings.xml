@@ -38,4 +38,6 @@
     <string name="tab_title_contacts">Контакты</string>
     <string name="tab_title_profile">Ваш профиль</string>
     <string name="tab_title_sing_out">Выход</string>
+    <string name="default_name">Иван Иванович</string>
+    <string name="default_phone">+7 (909) 123 4567</string>
 </resources>

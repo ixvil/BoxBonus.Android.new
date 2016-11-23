@@ -16,6 +16,7 @@
 
 package com.example.android.materialdesigncodelab.Activities;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -88,6 +89,15 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                         // Set item in checked state
                         menuItem.setChecked(true);
 
+                        switch(menuItem.getItemId()){
+                            case R.id.navigation_button_sign_out:
+                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                startActivityForResult(intent,0);
+                                finish();
+                                break;
+                            default:
+                                break;
+                        }
                         // TODO: handle navigation
 
                         // Closing drawer on item click
@@ -96,14 +106,14 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                     }
                 });
         // Adding Floating Action Button to bottom right of main view
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Snackbar.make(v, "Hello Snackbar!",
-                        Snackbar.LENGTH_LONG).show();
-            }
-        });
+//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Snackbar.make(v, "Hello Snackbar!",
+//                        Snackbar.LENGTH_LONG).show();
+//            }
+//        });
     }
 
     // Add Fragments to Tabs
