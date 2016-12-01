@@ -133,7 +133,7 @@ public class LoginActivity extends AppCompatActivity {
                     .toString();
             Ion.with(getApplicationContext())
                     .load(getResources().getString(R.string.hostname) + "json/login")
-                    .setMultipartParameter("email", mobile)
+                    .setMultipartParameter("mobile", mobile)
                     .setMultipartParameter("password", mPassword)
                     .asJsonObject()
                     .setCallback(new FutureCallback<JsonObject>() {

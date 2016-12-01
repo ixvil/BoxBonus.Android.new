@@ -40,6 +40,6 @@
     <string name="tab_title_sing_out">Выход</string>
     <string name="default_name">Иван Иванович</string>
     <string name="default_phone">+7 (909) 123 4567</string>
-    <string name="hostname">http://52.32.2.151/</string>
+    <string name="hostname">http://35.164.20.49/</string>
     <string name="auth_error">Ошибка авторизации</string>
 </resources>
