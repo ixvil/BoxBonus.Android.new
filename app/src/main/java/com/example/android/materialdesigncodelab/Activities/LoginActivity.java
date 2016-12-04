@@ -12,7 +12,7 @@ import android.text.TextWatcher;
 import android.util.Log;
 
 import android.content.Intent;
-import android.util.Patterns;
+import com.example.android.materialdesigncodelab.Models.User;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -112,7 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         Log.d(TAG, "Login");
 
         if (!validate()) {
-            onLoginFailed();
+            onLoginFailed("");
             return;
         }
 
@@ -124,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String mobile = _phoneText.getText().toString();
+        String mobile = User.deformatPhone(_phoneText.getText().toString());
         String password = _passwordText.getText().toString();
 
         try {
@@ -133,37 +133,30 @@ public class LoginActivity extends AppCompatActivity {
                     .toString();
             Ion.with(getApplicationContext())
                     .load(getResources().getString(R.string.hostname) + "json/login")
-                    .setMultipartParameter("mobile", mobile)
+                    .setMultipartParameter("phone", mobile)
                     .setMultipartParameter("password", mPassword)
                     .asJsonObject()
                     .setCallback(new FutureCallback<JsonObject>() {
                         @Override
                         public void onCompleted(Exception e, JsonObject result) {
+                            progressDialog.dismiss();
                             if (e == null) {
-                                progressDialog.dismiss();
+
                                 JsonObject userJson = result.getAsJsonObject("data");
                                 int userId = userJson.get("id").getAsInt();
                                 if (0 != userId) {
-                                    onLoginSuccess();
-//                                    User user = User.createUserFromJson(userJson, getApplicationContext());
-//                                    user.saveToAccountManager(email, mPassword);
-//                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                                    startActivity(intent);
+                                    onLoginSuccess(userJson);
                                 } else {
-//                                    User.userId = 0;
-//                                    mPasswordView.setError(getString(R.string.auth_error));
-//                                    mPasswordView.requestFocus();
-//                                    showProgress(false);
+                                    onLoginFailed("Auth error, Please check phone and password");
                                 }
                             } else {
-                                _passwordText.setError(getString(R.string.auth_error));
-                                _passwordText.requestFocus();
+                                onLoginFailed(e.getMessage().toString());
                             }
                         }
+
                     });
         } catch (Exception e) {
-            _passwordText.setError(e.getMessage().toString());
-            _passwordText.requestFocus();
+            onLoginFailed(e.getMessage().toString());
         }
     }
 
@@ -186,15 +179,19 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess() {
-        _loginButton.setEnabled(true);
-        finish();
+    public void onLoginSuccess( JsonObject userJson) {
+        User user = User.createUserFromJson(userJson);
+        User.proceedAuth(user);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 
-    public void onLoginFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+    public void onLoginFailed(String message) {
+        if(message != ""){
+            Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
+        }
         _loginButton.setEnabled(true);
+        User.proceedDeAuth();
     }
 
     public boolean validate() {
@@ -204,19 +201,13 @@ public class LoginActivity extends AppCompatActivity {
         String password = _passwordText.getText().toString();
 
         if (phone.isEmpty() || phone.length() != 16) {
-            _phoneText.setError("Введите номер телефона в формате +7 000 000-00-00");
+            Toast.makeText(getBaseContext(), "Введите номер телефона в формате +7 000 000-00-00", Toast.LENGTH_LONG).show();
             valid = false;
-        } else {
-            _phoneText.setError(null);
-            _phoneText.requestFocus();
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("Пароль дожен быть не меньше 4 и не больше 10 символов");
+            Toast.makeText(getBaseContext(), "Пароль дожен быть не меньше 4 и не больше 10 символов", Toast.LENGTH_LONG).show();
             valid = false;
-        } else {
-            _passwordText.setError(null);
-            _passwordText.requestFocus();
         }
 
         return valid;

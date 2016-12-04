@@ -39,6 +39,7 @@ import android.view.MenuItem;
 import com.example.android.materialdesigncodelab.Fragments.CardContentFragment;
 import com.example.android.materialdesigncodelab.Fragments.HomeFragment;
 import com.example.android.materialdesigncodelab.Fragments.ListContentFragment;
+import com.example.android.materialdesigncodelab.Models.User;
 import com.example.android.materialdesigncodelab.R;
 import com.example.android.materialdesigncodelab.Fragments.TileContentFragment;
 
@@ -54,20 +55,26 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     private DrawerLayout mDrawerLayout;
 
-    private Realm realm;
+   // private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
+        if(User.userId == 0){
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        }
+       //RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
 
         // Clear the realm from last time
-        Realm.deleteRealm(realmConfiguration);
+        //Realm.deleteRealm(realmConfiguration);
 
         // Create a new empty instance of Realm
-        realm = Realm.getInstance(realmConfiguration);
+        //realm = Realm.getInstance(realmConfiguration);
 
         // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);

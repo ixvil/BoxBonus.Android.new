@@ -1,7 +1,7 @@
 package com.example.android.materialdesigncodelab.Activities;
 
 import android.annotation.TargetApi;
-import android.app.ProgressDialog;
+
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,6 +17,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.materialdesigncodelab.Models.User;
 import com.example.android.materialdesigncodelab.R;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
@@ -114,24 +115,23 @@ public class SignupActivity extends AppCompatActivity {
         Log.d(TAG, "Signup");
 
         if (!validate()) {
-            onSignupFailed();
+            onSignupFailed("");
             return;
         }
 
-        _signupButton.setEnabled(false);
+        // _signupButton.setEnabled(false);
 
 //        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
 //                R.style.AppTheme_Base);
 //        progressDialog.setIndeterminate(true);
 //        progressDialog.setMessage("Creating Account...");
 //        progressDialog.show();
-
-        String mobile = _mobileText.getText().toString();
+        String mobile = User.deformatPhone(_mobileText.getText().toString());
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
 
         if (!reEnterPassword.equals(password)) {
-            onSignupFailed();
+            onSignupFailed("Passwords are not equal");
             return;
         }
 
@@ -141,7 +141,7 @@ public class SignupActivity extends AppCompatActivity {
                     .toString();
             Ion.with(getApplicationContext())
                     .load(getResources().getString(R.string.hostname) + "json/register")
-                    .setMultipartParameter("email", mobile)
+                    .setMultipartParameter("phone", mobile)
                     .setMultipartParameter("password", Hashing.sha256()
                             .hashString(password, StandardCharsets.UTF_8)
                             .toString())
@@ -154,72 +154,59 @@ public class SignupActivity extends AppCompatActivity {
                                 JsonObject userJson = result.getAsJsonObject("data");
                                 int userId = userJson.get("id").getAsInt();
                                 if (0 != userId) {
-                                    onSignupSuccess();
-//                                    User user = User.createUserFromJson(userJson, getApplicationContext());
-//                                    user.saveToAccountManager(email, mPassword);
-//                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                                    startActivity(intent);
-
+                                    onSignupSuccess(userJson);
                                 } else {
-//                                    User.userId = 0;
-//
-                                    _mobileText.setError(userJson.get("message").getAsString());
-                                    _mobileText.requestFocus();
-//                                    showProgress(false);
+                                    onSignupFailed(userJson.get("message").getAsString());
                                 }
                             } else {
-                                _mobileText.setError(e.getMessage().toString());
-                                _mobileText.requestFocus();
+                                onSignupFailed(e.getMessage().toString());
                             }
                         }
 
                     });
         } catch (Exception e) {
-            _mobileText.setError(e.getMessage().toString());
-            _mobileText.requestFocus();
-
+            onSignupFailed(e.getMessage().toString());
         }
     }
 
 
-    public void onSignupSuccess() {
-        _signupButton.setEnabled(true);
-        setResult(RESULT_OK, null);
-        finish();
+    public void onSignupSuccess(JsonObject userJson) {
+        User user = User.createUserFromJson(userJson);
+        User.proceedAuth(user);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        startActivity(intent);
     }
 
-    public void onSignupFailed() {
-        Toast.makeText(getBaseContext(), "Login failed", Toast.LENGTH_LONG).show();
-
+    public void onSignupFailed(String message) {
+        if (message != "") {
+            Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
+        }
         _signupButton.setEnabled(true);
+        User.proceedDeAuth();
     }
 
     public boolean validate() {
         boolean valid = true;
 
-        String mobile = _mobileText.getText().toString();
+        String phone = _mobileText.getText().toString();
         String password = _passwordText.getText().toString();
-        String reEnterPassword = _reEnterPasswordText.getText().toString();
 
-        if (mobile.isEmpty() || mobile.length() != 16) {
-            _mobileText.setError("Enter Valid Mobile Number");
+        if (phone.isEmpty() || phone.length() != 16) {
+            Toast.makeText(
+                    getBaseContext(),
+                    "Введите номер телефона в формате +7 000 000-00-00",
+                    Toast.LENGTH_LONG
+            ).show();
             valid = false;
-        } else {
-            _mobileText.setError(null);
         }
 
         if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
-            _passwordText.setError("between 4 and 10 alphanumeric characters");
+            Toast.makeText(
+                    getBaseContext(),
+                    "Пароль дожен быть не меньше 4 и не больше 10 символов",
+                    Toast.LENGTH_LONG
+            ).show();
             valid = false;
-        } else {
-            _passwordText.setError(null);
-        }
-
-        if (reEnterPassword.isEmpty() || reEnterPassword.length() < 4 || reEnterPassword.length() > 10 || !(reEnterPassword.equals(password))) {
-            _reEnterPasswordText.setError("Password Do not match");
-            valid = false;
-        } else {
-            _reEnterPasswordText.setError(null);
         }
 
         return valid;

@@ -8,8 +8,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.android.materialdesigncodelab.Models.Wallet;
+import com.example.android.materialdesigncodelab.Models.User;
 import com.example.android.materialdesigncodelab.R;
 
 /**
@@ -73,7 +75,8 @@ public class HomeFragment extends Fragment {
         ImageView qrImageView = (ImageView) mainView.findViewById(R.id.card_home_image);
         int pic_height = (int) getResources().getDimension(R.dimen.pic_height);
         qrImageView.setImageBitmap(Wallet.getQr(pic_height, pic_height));
-
+        TextView textView = (TextView) mainView.findViewById(R.id.card_wallet_num);
+        textView.setText(User.user.getWalletId());
         return mainView;
     }
 

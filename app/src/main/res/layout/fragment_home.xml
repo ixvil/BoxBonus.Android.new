@@ -30,8 +30,8 @@
                 tools:src="@drawable/a" />
 
 
-            <Button
-                android:id="@+id/action_home_button"
+            <TextView
+                android:id="@+id/card_wallet_num"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
