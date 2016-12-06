@@ -36,7 +36,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-import com.example.android.materialdesigncodelab.Fragments.CardContentFragment;
+import com.example.android.materialdesigncodelab.Fragments.ShopsListFragment;
 import com.example.android.materialdesigncodelab.Fragments.HomeFragment;
 import com.example.android.materialdesigncodelab.Fragments.ListContentFragment;
 import com.example.android.materialdesigncodelab.Models.User;
@@ -45,8 +45,6 @@ import com.example.android.materialdesigncodelab.Fragments.TileContentFragment;
 
 import java.util.ArrayList;
 import java.util.List;
-import io.realm.Realm;
-import io.realm.RealmConfiguration;
 
 /**
  * Provides UI for the main screen.
@@ -55,39 +53,35 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
     private DrawerLayout mDrawerLayout;
 
-   // private Realm realm;
+    // private Realm realm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if(User.userId == 0){
+        if (User.userId == 0) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(intent);
             finish();
         }
-       //RealmConfiguration realmConfiguration = new RealmConfiguration.Builder().build();
 
-        // Clear the realm from last time
-        //Realm.deleteRealm(realmConfiguration);
-
-        // Create a new empty instance of Realm
-        //realm = Realm.getInstance(realmConfiguration);
-
-        // Adding Toolbar to Main screen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         // Setting ViewPager for each Tabs
         ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
         setupViewPager(viewPager);
+
         // Set Tabs inside Toolbar
         TabLayout tabs = (TabLayout) findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);
+
         // Create Navigation drawer and inlfate layout
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer);
+
         // Adding menu icon to Toolbar
         ActionBar supportActionBar = getSupportActionBar();
         if (supportActionBar != null) {
@@ -97,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
             supportActionBar.setHomeAsUpIndicator(indicator);
             supportActionBar.setDisplayHomeAsUpEnabled(true);
         }
+
         // Set behavior of Navigation drawer
         navigationView.setNavigationItemSelectedListener(
                 new NavigationView.OnNavigationItemSelectedListener() {
@@ -106,10 +101,10 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
                         // Set item in checked state
                         menuItem.setChecked(true);
 
-                        switch(menuItem.getItemId()){
+                        switch (menuItem.getItemId()) {
                             case R.id.navigation_button_sign_out:
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                startActivityForResult(intent,0);
+                                startActivityForResult(intent, 0);
                                 finish();
                                 break;
                             default:
@@ -139,8 +134,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new HomeFragment(), getString(R.string.tab_title_home));
         adapter.addFragment(new ListContentFragment(), getString(R.string.tab_title_news));
-        adapter.addFragment(new TileContentFragment(), getString(R.string.tab_title_shops));
-        adapter.addFragment(new CardContentFragment(), getString(R.string.tab_title_gifts));
+        adapter.addFragment(new ShopsListFragment(), getString(R.string.tab_title_shops));
+        adapter.addFragment(new TileContentFragment(), getString(R.string.tab_title_gifts));
         viewPager.setAdapter(adapter);
     }
 

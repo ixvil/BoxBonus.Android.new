@@ -75,8 +75,13 @@ public class HomeFragment extends Fragment {
         ImageView qrImageView = (ImageView) mainView.findViewById(R.id.card_home_image);
         int pic_height = (int) getResources().getDimension(R.dimen.pic_height);
         qrImageView.setImageBitmap(Wallet.getQr(pic_height, pic_height));
+
         TextView textView = (TextView) mainView.findViewById(R.id.card_wallet_num);
-        textView.setText(User.user.getWalletId());
+        textView.setText("№ " + String.valueOf(User.user.getWalletId()));
+
+        TextView balanceView = (TextView) mainView.findViewById(R.id.card_wallet_balance);
+        balanceView.setText("У вас " + String.valueOf(User.user.getBalance()) + " бонусов");
+
         return mainView;
     }
 

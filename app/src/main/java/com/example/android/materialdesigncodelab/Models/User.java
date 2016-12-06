@@ -56,6 +56,9 @@ public class User {
         this.id = id;
     }
 
+    /**
+     * @return
+     */
     public int getBalance() {
         return balance;
     }
@@ -64,6 +67,9 @@ public class User {
         this.balance = balance;
     }
 
+    /**
+     * @return int
+     */
     public int getWalletId() {
         return walletId;
     }

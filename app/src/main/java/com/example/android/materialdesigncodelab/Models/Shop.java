@@ -1,5 +1,18 @@
 package com.example.android.materialdesigncodelab.Models;
 
+import android.content.Context;
+import android.support.test.espresso.core.deps.guava.hash.Hashing;
+import android.widget.Toast;
+
+import com.example.android.materialdesigncodelab.Fragments.HomeFragment;
+import com.example.android.materialdesigncodelab.R;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+
 import io.realm.RealmObject;
 
 /**

@@ -33,31 +33,35 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.Activities.DetailActivity;
 import com.example.android.materialdesigncodelab.R;
+import com.google.gson.JsonObject;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
+import java.util.ArrayList;
 
 /**
  * Provides UI for the view with Cards.
  */
-public class CardContentFragment extends Fragment {
+public class ShopsListFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
-                R.layout.recycler_view, container, false);
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext());
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        return recyclerView;
+        this.getAllShops(inflater, container, savedInstanceState);
+
+        return null;
     }
+
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView picture;
         public TextView name;
         public TextView description;
+
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.item_card, parent, false));
             picture = (ImageView) itemView.findViewById(R.id.card_image);
@@ -74,8 +78,8 @@ public class CardContentFragment extends Fragment {
             });
 
             // Adding Snackbar to Action Button inside card
-            Button button = (Button)itemView.findViewById(R.id.action_button);
-            button.setOnClickListener(new View.OnClickListener(){
+            Button button = (Button) itemView.findViewById(R.id.action_button);
+            button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Snackbar.make(v, "Action is pressed",
@@ -85,7 +89,7 @@ public class CardContentFragment extends Fragment {
 
             ImageButton favoriteImageButton =
                     (ImageButton) itemView.findViewById(R.id.favorite_button);
-            favoriteImageButton.setOnClickListener(new View.OnClickListener(){
+            favoriteImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Snackbar.make(v, "Added to Favorite",
@@ -94,7 +98,7 @@ public class CardContentFragment extends Fragment {
             });
 
             ImageButton shareImageButton = (ImageButton) itemView.findViewById(R.id.share_button);
-            shareImageButton.setOnClickListener(new View.OnClickListener(){
+            shareImageButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Snackbar.make(v, "Share article",
@@ -115,7 +119,7 @@ public class CardContentFragment extends Fragment {
         private final String[] mPlaceDesc;
         private final Drawable[] mPlacePictures;
 
-        public ContentAdapter(Context context) {
+        public ContentAdapter(Context context, JsonObject jsonObject) {
             Resources resources = context.getResources();
             mPlaces = resources.getStringArray(R.array.places);
             mPlaceDesc = resources.getStringArray(R.array.place_desc);
@@ -144,4 +148,58 @@ public class CardContentFragment extends Fragment {
             return LENGTH;
         }
     }
+
+    public void getAllShops(final LayoutInflater inflater, final ViewGroup container,
+                            Bundle savedInstanceState) {
+
+        final RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+                R.layout.recycler_view, container, false);
+
+
+        try {
+            Ion.with(recyclerView.getContext())
+                    .load(inflater.getContext().getResources().getString(R.string.hostname) + "json/getShops")
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject result) {
+                            if (e == null) {
+                                JsonObject userJson = result.getAsJsonObject("data");
+                                int userId = userJson.get("id").getAsInt();
+                                if (0 != userId) {
+                                    ContentAdapter adapter = new ContentAdapter(recyclerView.getContext(), userJson);
+                                    recyclerView.setAdapter(adapter);
+                                    recyclerView.setHasFixedSize(true);
+                                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+                                } else {
+                                    onFetchFailed(userJson.get("message").getAsString(), recyclerView.getContext());
+                                }
+                            } else {
+                                onFetchFailed(e.getMessage().toString(), recyclerView.getContext());
+                            }
+                        }
+
+                    });
+        } catch (Exception e) {
+            onFetchFailed(e.getMessage().toString(), recyclerView.getContext());
+        }
+
+    }
+
+    private void onFetchSuccess(JsonObject userJson) {
+        RecyclerView recyclerView = (RecyclerView) getLayoutInflater(new Bundle()).inflate(
+                R.layout.recycler_view, (ViewGroup) getView(), false);
+        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext(), userJson);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    }
+
+    private void onFetchFailed(String message, Context context) {
+        if (message != "") {
+            Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+        }
+    }
+
 }

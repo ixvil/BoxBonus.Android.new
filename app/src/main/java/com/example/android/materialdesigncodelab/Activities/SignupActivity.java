@@ -126,6 +126,7 @@ public class SignupActivity extends AppCompatActivity {
 //        progressDialog.setIndeterminate(true);
 //        progressDialog.setMessage("Creating Account...");
 //        progressDialog.show();
+
         String mobile = User.deformatPhone(_mobileText.getText().toString());
         String password = _passwordText.getText().toString();
         String reEnterPassword = _reEnterPasswordText.getText().toString();
