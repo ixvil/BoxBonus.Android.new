@@ -18,9 +18,6 @@ package com.example.android.materialdesigncodelab.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
-import android.content.res.TypedArray;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
@@ -36,26 +33,60 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.Activities.DetailActivity;
+import com.example.android.materialdesigncodelab.Adapters.AbstractShopAdapter;
+import com.example.android.materialdesigncodelab.Models.Shop;
 import com.example.android.materialdesigncodelab.R;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import java.util.ArrayList;
+import java.io.IOException;
 
 /**
  * Provides UI for the view with Cards.
  */
 public class ShopsListFragment extends Fragment {
 
+    private ShopAdapter contentAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        RecyclerView recyclerView = (RecyclerView) inflater.inflate(
+                R.layout.recycler_view, container, false);
+
+        contentAdapter = new ShopAdapter(recyclerView.getContext());
+        recyclerView.setAdapter(contentAdapter);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+
         this.getAllShops(inflater, container, savedInstanceState);
 
-        return null;
+        return recyclerView;
     }
 
+    class ShopAdapter extends AbstractShopAdapter<ViewHolder> {
+
+        ShopAdapter(Context context) {
+            super(context);
+        }
+
+        @Override
+        public ShopsListFragment.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new ShopsListFragment.ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+
+            holder.name.setText(mPlaces[position]);
+            holder.description.setText(mPlaceDesc[position]);
+            Ion.with(holder.picture)
+                    .placeholder(R.drawable.a)
+                    .load(mPlacePictures[position]);
+        }
+    }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView picture;
@@ -108,46 +139,6 @@ public class ShopsListFragment extends Fragment {
         }
     }
 
-    /**
-     * Adapter to display recycler view.
-     */
-    public static class ContentAdapter extends RecyclerView.Adapter<ViewHolder> {
-        // Set numbers of Card in RecyclerView.
-        private static final int LENGTH = 18;
-
-        private final String[] mPlaces;
-        private final String[] mPlaceDesc;
-        private final Drawable[] mPlacePictures;
-
-        public ContentAdapter(Context context, JsonObject jsonObject) {
-            Resources resources = context.getResources();
-            mPlaces = resources.getStringArray(R.array.places);
-            mPlaceDesc = resources.getStringArray(R.array.place_desc);
-            TypedArray a = resources.obtainTypedArray(R.array.places_picture);
-            mPlacePictures = new Drawable[a.length()];
-            for (int i = 0; i < mPlacePictures.length; i++) {
-                mPlacePictures[i] = a.getDrawable(i);
-            }
-            a.recycle();
-        }
-
-        @Override
-        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new ViewHolder(LayoutInflater.from(parent.getContext()), parent);
-        }
-
-        @Override
-        public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.picture.setImageDrawable(mPlacePictures[position % mPlacePictures.length]);
-            holder.name.setText(mPlaces[position % mPlaces.length]);
-            holder.description.setText(mPlaceDesc[position % mPlaceDesc.length]);
-        }
-
-        @Override
-        public int getItemCount() {
-            return LENGTH;
-        }
-    }
 
     public void getAllShops(final LayoutInflater inflater, final ViewGroup container,
                             Bundle savedInstanceState) {
@@ -158,28 +149,26 @@ public class ShopsListFragment extends Fragment {
 
         try {
             Ion.with(recyclerView.getContext())
-                    .load(inflater.getContext().getResources().getString(R.string.hostname) + "json/getShops")
+                    .load(inflater.getContext().getResources().getString(R.string.hostname) + "/json/getpartners")
                     .asJsonObject()
                     .setCallback(new FutureCallback<JsonObject>() {
                         @Override
                         public void onCompleted(Exception e, JsonObject result) {
                             if (e == null) {
-                                JsonObject userJson = result.getAsJsonObject("data");
-                                int userId = userJson.get("id").getAsInt();
-                                if (0 != userId) {
-                                    ContentAdapter adapter = new ContentAdapter(recyclerView.getContext(), userJson);
-                                    recyclerView.setAdapter(adapter);
-                                    recyclerView.setHasFixedSize(true);
-                                    recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
+                                JsonArray partnersJson = result.getAsJsonArray("data");
+                                if (partnersJson != null) {
+                                    try {
+                                        onFetchSuccess(partnersJson);
+                                    } catch (IOException e1) {
+                                        e1.printStackTrace();
+                                    }
                                 } else {
-                                    onFetchFailed(userJson.get("message").getAsString(), recyclerView.getContext());
+                                    onFetchFailed(result.get("message").getAsString(), recyclerView.getContext());
                                 }
                             } else {
                                 onFetchFailed(e.getMessage().toString(), recyclerView.getContext());
                             }
                         }
-
                     });
         } catch (Exception e) {
             onFetchFailed(e.getMessage().toString(), recyclerView.getContext());
@@ -187,13 +176,10 @@ public class ShopsListFragment extends Fragment {
 
     }
 
-    private void onFetchSuccess(JsonObject userJson) {
-        RecyclerView recyclerView = (RecyclerView) getLayoutInflater(new Bundle()).inflate(
-                R.layout.recycler_view, (ViewGroup) getView(), false);
-        ContentAdapter adapter = new ContentAdapter(recyclerView.getContext(), userJson);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    private void onFetchSuccess(JsonArray jsonObject) throws IOException {
+        Shop.shops = jsonObject;
+        contentAdapter.updateAdapter(jsonObject);
+        contentAdapter.notifyDataSetChanged();
     }
 
     private void onFetchFailed(String message, Context context) {

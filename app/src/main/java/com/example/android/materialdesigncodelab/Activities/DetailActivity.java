@@ -16,16 +16,24 @@
 
 package com.example.android.materialdesigncodelab.Activities;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.android.materialdesigncodelab.Adapters.AbstractShopAdapter;
+import com.example.android.materialdesigncodelab.Models.Shop;
 import com.example.android.materialdesigncodelab.R;
+import com.google.gson.JsonObject;
+import com.koushikdutta.ion.Ion;
 
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.
@@ -46,23 +54,38 @@ public class DetailActivity extends AppCompatActivity {
         // Set title of Detail page
         // collapsingToolbar.setTitle(getString(R.string.item_title));
 
-        int postion = getIntent().getIntExtra(EXTRA_POSITION, 0);
+        int position = getIntent().getIntExtra(EXTRA_POSITION, 0);
+
+        if (Shop.shops == null) {
+            throw new RuntimeException("No shops");
+        }
+
+        JsonObject obj = (JsonObject) Shop.shops.get(position);
+        if (obj == null) {
+            throw new RuntimeException("No such shop");
+        }
+
+        JsonObject partnerAttributes = (JsonObject) obj.get("attributes");
+
         Resources resources = getResources();
-        String[] places = resources.getStringArray(R.array.places);
-        collapsingToolbar.setTitle(places[postion % places.length]);
+        collapsingToolbar.setTitle(partnerAttributes.get("name").getAsString());
 
-        String[] placeDetails = resources.getStringArray(R.array.place_details);
+
         TextView placeDetail = (TextView) findViewById(R.id.place_detail);
-        placeDetail.setText(placeDetails[postion % placeDetails.length]);
+        placeDetail.setText(partnerAttributes.get("description").getAsString());
 
-        String[] placeLocations = resources.getStringArray(R.array.place_locations);
-        TextView placeLocation =  (TextView) findViewById(R.id.place_location);
-        placeLocation.setText(placeLocations[postion % placeLocations.length]);
 
-        TypedArray placePictures = resources.obtainTypedArray(R.array.places_picture);
-        ImageView placePicutre = (ImageView) findViewById(R.id.image);
-        placePicutre.setImageDrawable(placePictures.getDrawable(postion % placePictures.length()));
+        TextView placeLocation = (TextView) findViewById(R.id.place_location);
+        placeLocation.setText(partnerAttributes.get("location").getAsString());
 
-        placePictures.recycle();
+        ImageView placePicture = (ImageView) findViewById(R.id.image);
+        Ion.with(placePicture)
+                .placeholder(R.drawable.a)
+                .load(getApplicationContext().getString(R.string.image_url_prefix)
+                        + partnerAttributes.get("logo").getAsString()
+                );
+
+
     }
+
 }

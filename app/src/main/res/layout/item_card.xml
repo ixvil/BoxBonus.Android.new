@@ -45,7 +45,7 @@
             android:layout_marginLeft="@dimen/md_keylines"
             tools:text="@string/item_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Title"
-            android:textColor="@color/white" />
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/card_text"
