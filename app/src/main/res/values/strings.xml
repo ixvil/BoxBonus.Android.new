@@ -45,4 +45,5 @@
     <string name="image_url_prefix">http://35.164.20.49/uploads/</string>
     <string name="activity_detail_description">Описание</string>
     <string name="activity_detail_location">Адрес</string>
+    <string name="activity_detail_gifts">Подарки</string>
 </resources>

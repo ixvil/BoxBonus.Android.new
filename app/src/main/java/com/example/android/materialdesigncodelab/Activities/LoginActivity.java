@@ -2,6 +2,8 @@ package com.example.android.materialdesigncodelab.Activities;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.test.espresso.core.deps.guava.hash.Hashing;
@@ -48,12 +50,20 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        String defaultValue = " ";
+        String[] creds = sharedPref.getString("creds", defaultValue).split(":");
+        if (creds.length == 2) {
+            login(creds[0], creds[1]);
+        }
+
         ButterKnife.bind(this);
         _loginButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                login();
+                login(null, null);
             }
         });
         _signupLink.setOnClickListener(new View.OnClickListener() {
@@ -108,15 +118,35 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public void login() {
-        Log.d(TAG, "Login");
+    public void login(String inputMobile, String inputPassword) {
 
-        if (!validate()) {
-            onLoginFailed("");
-            return;
+        final String mobile;
+        final String password;
+        final String mPassword;
+        if (inputMobile == null || inputPassword == null) {
+            mobile = User.deformatPhone(_phoneText.getText().toString());
+            password = _passwordText.getText().toString();
+
+            if (!validate(mobile, password)) {
+                onLoginFailed("Fields not valid");
+                return;
+            }
+
+            mPassword = Hashing.sha256()
+                    .hashString(password, StandardCharsets.UTF_8)
+                    .toString();
+
+        } else {
+            mobile = inputMobile;
+            mPassword = inputPassword;
         }
 
-        _loginButton.setEnabled(false);
+
+        Log.d(TAG, "Login");
+
+
+
+//        _loginButton.setEnabled(false);
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Base);
@@ -124,13 +154,7 @@ public class LoginActivity extends AppCompatActivity {
         progressDialog.setMessage("Authenticating...");
         progressDialog.show();
 
-        String mobile = User.deformatPhone(_phoneText.getText().toString());
-        String password = _passwordText.getText().toString();
-
         try {
-            final String mPassword = Hashing.sha256()
-                    .hashString(password, StandardCharsets.UTF_8)
-                    .toString();
             Ion.with(getApplicationContext())
                     .load(getResources().getString(R.string.hostname) + "json/login")
                     .setMultipartParameter("phone", mobile)
@@ -145,7 +169,7 @@ public class LoginActivity extends AppCompatActivity {
                                 JsonObject userJson = result.getAsJsonObject("data");
                                 int userId = userJson.get("id").getAsInt();
                                 if (0 != userId) {
-                                    onLoginSuccess(userJson);
+                                    onLoginSuccess(userJson, mobile, mPassword);
                                 } else {
                                     onLoginFailed("Auth error, Please check phone and password");
                                 }
@@ -179,33 +203,39 @@ public class LoginActivity extends AppCompatActivity {
         moveTaskToBack(true);
     }
 
-    public void onLoginSuccess( JsonObject userJson) {
+    public void onLoginSuccess(JsonObject userJson, String mobile, String password) {
         User user = User.createUserFromJson(userJson);
         User.proceedAuth(user);
+
+        String creds = mobile + ":" + password;
+        SharedPreferences sharedPref = this.getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString("creds", creds);
+        editor.apply();
+
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
     }
 
     public void onLoginFailed(String message) {
-        if(message != ""){
+        if (message != "") {
             Toast.makeText(getBaseContext(), message, Toast.LENGTH_LONG).show();
         }
-        _loginButton.setEnabled(true);
+//        _loginButton.setEnabled(true);
         User.proceedDeAuth();
     }
 
-    public boolean validate() {
+    public boolean validate(String inputMobile, String inputPassword) {
         boolean valid = true;
 
-        String phone = _phoneText.getText().toString();
-        String password = _passwordText.getText().toString();
-
-        if (phone.isEmpty() || phone.length() != 16) {
+        if (inputMobile.isEmpty() || inputMobile.length() != 11) {
             Toast.makeText(getBaseContext(), "Введите номер телефона в формате +7 000 000-00-00", Toast.LENGTH_LONG).show();
             valid = false;
+            // TODO: valid phone in both cases: from prefs and direct
+
         }
 
-        if (password.isEmpty() || password.length() < 4 || password.length() > 10) {
+        if (inputPassword.isEmpty() || inputPassword.length() < 4 || inputPassword.length() > 10) {
             Toast.makeText(getBaseContext(), "Пароль дожен быть не меньше 4 и не больше 10 символов", Toast.LENGTH_LONG).show();
             valid = false;
         }

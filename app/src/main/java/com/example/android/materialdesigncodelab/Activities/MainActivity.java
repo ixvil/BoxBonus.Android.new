@@ -16,7 +16,9 @@
 
 package com.example.android.materialdesigncodelab.Activities;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
@@ -39,6 +41,7 @@ import android.view.MenuItem;
 import com.example.android.materialdesigncodelab.Fragments.ShopsListFragment;
 import com.example.android.materialdesigncodelab.Fragments.HomeFragment;
 import com.example.android.materialdesigncodelab.Fragments.ListContentFragment;
+import com.example.android.materialdesigncodelab.Models.Gift;
 import com.example.android.materialdesigncodelab.Models.User;
 import com.example.android.materialdesigncodelab.R;
 import com.example.android.materialdesigncodelab.Fragments.TileContentFragment;
@@ -103,6 +106,13 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 
                         switch (menuItem.getItemId()) {
                             case R.id.navigation_button_sign_out:
+
+                                String creds = " ";
+                                SharedPreferences sharedPref = getPreferences(Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPref.edit();
+                                editor.putString("creds", creds);
+                                editor.apply();
+
                                 Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                 startActivityForResult(intent, 0);
                                 finish();
@@ -127,6 +137,8 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 //                        Snackbar.LENGTH_LONG).show();
 //            }
 //        });
+
+        Gift.getGiftsFromNet(getApplicationContext());
     }
 
     // Add Fragments to Tabs
