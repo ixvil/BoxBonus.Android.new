@@ -44,7 +44,7 @@ import com.example.android.materialdesigncodelab.Fragments.ListContentFragment;
 import com.example.android.materialdesigncodelab.Models.Gift;
 import com.example.android.materialdesigncodelab.Models.User;
 import com.example.android.materialdesigncodelab.R;
-import com.example.android.materialdesigncodelab.Fragments.TileContentFragment;
+import com.example.android.materialdesigncodelab.Fragments.GiftsListFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 //            }
 //        });
 
-        Gift.getGiftsFromNet(getApplicationContext());
+        Gift.getFromNet(getApplicationContext());
     }
 
     // Add Fragments to Tabs
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
         adapter.addFragment(new HomeFragment(), getString(R.string.tab_title_home));
         adapter.addFragment(new ListContentFragment(), getString(R.string.tab_title_news));
         adapter.addFragment(new ShopsListFragment(), getString(R.string.tab_title_shops));
-        adapter.addFragment(new TileContentFragment(), getString(R.string.tab_title_gifts));
+        adapter.addFragment(new GiftsListFragment(), getString(R.string.tab_title_gifts));
         viewPager.setAdapter(adapter);
     }
 

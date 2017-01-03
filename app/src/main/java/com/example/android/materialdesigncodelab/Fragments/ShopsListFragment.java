@@ -33,7 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.Activities.DetailActivity;
-import com.example.android.materialdesigncodelab.Adapters.AbstractShopAdapter;
+import com.example.android.materialdesigncodelab.Adapters.AbstractFragmentContentAdapter;
 import com.example.android.materialdesigncodelab.Models.Shop;
 import com.example.android.materialdesigncodelab.R;
 import com.google.gson.JsonArray;
@@ -66,10 +66,27 @@ public class ShopsListFragment extends Fragment {
         return recyclerView;
     }
 
-    class ShopAdapter extends AbstractShopAdapter<ViewHolder> {
+    class ShopAdapter extends AbstractFragmentContentAdapter<ViewHolder> {
 
         ShopAdapter(Context context) {
             super(context);
+        }
+
+        @Override
+        public void updateAdapter(JsonArray jsonObject) throws IOException {
+            mGifts = new String[jsonObject.size()];
+            mPlaceDesc = new String[jsonObject.size()];
+            mGiftsPictures = new String[jsonObject.size()];
+
+            for (int i = 0; i < jsonObject.size(); i++) {
+                JsonObject obj = (JsonObject) jsonObject.get(i);
+                JsonObject partnerAttributes = (JsonObject) obj.get("attributes");
+                mGifts[i] = partnerAttributes.get("name").getAsString();
+                mPlaceDesc[i] = partnerAttributes.get("description").getAsString();
+                mGiftsPictures[i] = innerContext.getString(R.string.image_url_prefix) + partnerAttributes.get("logo").getAsString();
+            }
+
+            setLength(jsonObject.size());
         }
 
         @Override
@@ -80,11 +97,11 @@ public class ShopsListFragment extends Fragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
 
-            holder.name.setText(mPlaces[position]);
+            holder.name.setText(mGifts[position]);
             holder.description.setText(mPlaceDesc[position]);
             Ion.with(holder.picture)
                     .placeholder(R.drawable.a)
-                    .load(mPlacePictures[position]);
+                    .load(mGiftsPictures[position]);
         }
     }
 

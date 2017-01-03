@@ -1,11 +1,13 @@
 package com.example.android.materialdesigncodelab.Models;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 import android.widget.Toast;
 
 import com.example.android.materialdesigncodelab.R;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -43,6 +45,19 @@ public class Gift {
 
     }
 
+    public static JsonObject getGiftById(String id) {
+        for (JsonArray giftsArray : gifts) {
+            if (giftsArray != null) {
+                for (JsonElement element : giftsArray) {
+                    JsonObject object = (JsonObject) element;
+                    if (object.get("id").getAsString().equals(id)) {
+                        return object;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
     public static JsonArray getGiftsForShop(int id) {
         if (null == gifts) {
@@ -55,7 +70,11 @@ public class Gift {
         return gifts[id];
     }
 
-    public static void getGiftsFromNet(final Context context) {
+    public static void getFromNet(final Context context) {
+        getFromNet(context, null);
+    }
+
+    public static void getFromNet(final Context context, final FragmentInterface fragment) {
 
         try {
             Ion.with(context)
@@ -67,6 +86,9 @@ public class Gift {
                             if (e == null) {
                                 JsonArray giftsJson = result.getAsJsonArray("data");
                                 if (giftsJson != null) {
+                                    if (fragment != null) {
+                                        fragment.onFetchSuccess(giftsJson);
+                                    }
                                     onFetchSuccess(giftsJson);
                                 } else {
                                     onFetchFailed(result.get("message").getAsString(), context);
@@ -89,5 +111,9 @@ public class Gift {
         if (message != "") {
             Toast.makeText(context, message, Toast.LENGTH_LONG).show();
         }
+    }
+
+    public interface FragmentInterface {
+        public void onFetchSuccess(JsonArray jsonArray);
     }
 }

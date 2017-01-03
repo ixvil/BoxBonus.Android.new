@@ -33,7 +33,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.android.materialdesigncodelab.Adapters.AbstractShopAdapter;
+
 import com.example.android.materialdesigncodelab.Models.Gift;
 import com.example.android.materialdesigncodelab.Models.Shop;
 import com.example.android.materialdesigncodelab.R;
@@ -50,6 +50,7 @@ import static com.example.android.materialdesigncodelab.R.attr.selectableItemBac
 public class DetailActivity extends AppCompatActivity {
 
     public static final String EXTRA_POSITION = "position";
+    public static final String EXTRA_MODEL = "shops";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
