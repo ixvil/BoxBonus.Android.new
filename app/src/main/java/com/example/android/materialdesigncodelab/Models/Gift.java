@@ -1,18 +1,19 @@
 package com.example.android.materialdesigncodelab.Models;
 
+import android.annotation.TargetApi;
 import android.content.Context;
-import android.support.v4.app.Fragment;
+import android.os.Build;
 import android.widget.Toast;
 
+import com.example.android.materialdesigncodelab.Fragments.FetchSuccessFragmentInterface;
 import com.example.android.materialdesigncodelab.R;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
-import java.io.IOException;
+import java.util.Objects;
 
 /**
  * Created by ixvil on 02.01.2017.
@@ -74,7 +75,7 @@ public class Gift {
         getFromNet(context, null);
     }
 
-    public static void getFromNet(final Context context, final FragmentInterface fragment) {
+    public static void getFromNet(final Context context, final FetchSuccessFragmentInterface fragment) {
 
         try {
             Ion.with(context)
@@ -107,13 +108,11 @@ public class Gift {
         Gift.setGifts(giftsJson);
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     private static void onFetchFailed(String message, Context context) {
-        if (message != "") {
+        if (!Objects.equals(message, "")) {
             Toast.makeText(context, message, Toast.LENGTH_LONG).show();
         }
     }
 
-    public interface FragmentInterface {
-        public void onFetchSuccess(JsonArray jsonArray);
-    }
 }

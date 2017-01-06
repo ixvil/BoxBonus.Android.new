@@ -1,6 +1,7 @@
 package com.example.android.materialdesigncodelab;
 
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
 
 import com.example.android.materialdesigncodelab.Activities.LoginActivity;
@@ -14,6 +15,10 @@ import io.realm.Realm;
  */
 
 public class BoxBonusApplication extends Application {
+
+    Context getCurrentContext(){
+        return getApplicationContext();
+    }
 
     @Override
     public void onCreate() {

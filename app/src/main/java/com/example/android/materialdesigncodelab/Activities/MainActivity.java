@@ -40,8 +40,9 @@ import android.view.MenuItem;
 
 import com.example.android.materialdesigncodelab.Fragments.ShopsListFragment;
 import com.example.android.materialdesigncodelab.Fragments.HomeFragment;
-import com.example.android.materialdesigncodelab.Fragments.ListContentFragment;
+import com.example.android.materialdesigncodelab.Fragments.NewsListFragment;
 import com.example.android.materialdesigncodelab.Models.Gift;
+import com.example.android.materialdesigncodelab.Models.NewsModel;
 import com.example.android.materialdesigncodelab.Models.User;
 import com.example.android.materialdesigncodelab.R;
 import com.example.android.materialdesigncodelab.Fragments.GiftsListFragment;
@@ -137,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 //                        Snackbar.LENGTH_LONG).show();
 //            }
 //        });
-
+        NewsModel.getFromNet(getApplicationContext());
         Gift.getFromNet(getApplicationContext());
     }
 
@@ -145,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
     private void setupViewPager(ViewPager viewPager) {
         Adapter adapter = new Adapter(getSupportFragmentManager());
         adapter.addFragment(new HomeFragment(), getString(R.string.tab_title_home));
-        adapter.addFragment(new ListContentFragment(), getString(R.string.tab_title_news));
+        adapter.addFragment(new NewsListFragment(), getString(R.string.tab_title_news));
         adapter.addFragment(new ShopsListFragment(), getString(R.string.tab_title_shops));
         adapter.addFragment(new GiftsListFragment(), getString(R.string.tab_title_gifts));
         viewPager.setAdapter(adapter);

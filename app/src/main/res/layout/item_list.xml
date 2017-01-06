@@ -26,7 +26,7 @@
         android:layout_width="@dimen/avator_size"
         android:layout_height="@dimen/avator_size"
         android:scaleType="centerCrop"
-        tools:src="@drawable/a_avator" />
+        tools:src="@drawable/a" />
 
     <TextView
         android:id="@+id/list_title"
@@ -51,4 +51,11 @@
         tools:text="@string/item_desc"
         android:textAppearance="?attr/textAppearanceListItem"
         android:textSize="@dimen/list_body" />
+
+    <TextView
+        android:id="@+id/list_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="invisible" />
+
 </RelativeLayout>

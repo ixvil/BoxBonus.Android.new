@@ -27,6 +27,7 @@ public abstract class AbstractFragmentContentAdapter<V extends RecyclerView.View
     protected String[] mGifts;
     protected String[] mPlaceDesc;
     protected String[] mGiftsPictures;
+    protected String[] mDescriptions;
     protected final Context innerContext;
 
 
