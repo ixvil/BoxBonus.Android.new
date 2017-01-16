@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.materialdesigncodelab.Activities;
+package com.ixvil.android.BoxBonus.Activities;
 
 import android.content.Context;
 import android.content.Intent;
@@ -38,14 +38,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 
-import com.example.android.materialdesigncodelab.Fragments.ShopsListFragment;
-import com.example.android.materialdesigncodelab.Fragments.HomeFragment;
-import com.example.android.materialdesigncodelab.Fragments.NewsListFragment;
-import com.example.android.materialdesigncodelab.Models.Gift;
-import com.example.android.materialdesigncodelab.Models.NewsModel;
-import com.example.android.materialdesigncodelab.Models.User;
-import com.example.android.materialdesigncodelab.R;
-import com.example.android.materialdesigncodelab.Fragments.GiftsListFragment;
+import com.ixvil.android.BoxBonus.Fragments.ShopsListFragment;
+import com.ixvil.android.BoxBonus.Fragments.HomeFragment;
+import com.ixvil.android.BoxBonus.Fragments.NewsListFragment;
+import com.ixvil.android.BoxBonus.Models.Gift;
+import com.ixvil.android.BoxBonus.Models.NewsModel;
+import com.ixvil.android.BoxBonus.Models.User;
+import com.ixvil.android.BoxBonus.R;
+import com.ixvil.android.BoxBonus.Fragments.GiftsListFragment;
 
 import java.util.ArrayList;
 import java.util.List;

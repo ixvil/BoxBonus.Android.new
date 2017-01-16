@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.materialdesigncodelab.Activities;
+package com.ixvil.android.BoxBonus.Activities;
 
 import android.content.res.Resources;
 import android.os.Bundle;
@@ -24,9 +24,8 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.materialdesigncodelab.Models.Gift;
-import com.example.android.materialdesigncodelab.Models.Shop;
-import com.example.android.materialdesigncodelab.R;
+import com.ixvil.android.BoxBonus.Models.Gift;
+import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;

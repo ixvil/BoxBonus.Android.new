@@ -1,4 +1,4 @@
-package com.example.android.materialdesigncodelab.Activities;
+package com.ixvil.android.BoxBonus.Activities;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -9,9 +9,9 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.materialdesigncodelab.Entities.News;
-import com.example.android.materialdesigncodelab.Models.NewsModel;
-import com.example.android.materialdesigncodelab.R;
+import com.ixvil.android.BoxBonus.Entities.News;
+import com.ixvil.android.BoxBonus.Models.NewsModel;
+import com.ixvil.android.BoxBonus.R;
 import com.koushikdutta.ion.Ion;
 
 import java.util.Objects;

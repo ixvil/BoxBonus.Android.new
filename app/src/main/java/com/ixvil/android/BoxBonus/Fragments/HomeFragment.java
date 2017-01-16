@@ -1,4 +1,4 @@
-package com.example.android.materialdesigncodelab.Fragments;
+package com.ixvil.android.BoxBonus.Fragments;
 
 import android.content.Context;
 import android.net.Uri;
@@ -10,9 +10,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.materialdesigncodelab.Models.Wallet;
-import com.example.android.materialdesigncodelab.Models.User;
-import com.example.android.materialdesigncodelab.R;
+import com.ixvil.android.BoxBonus.Models.Wallet;
+import com.ixvil.android.BoxBonus.Models.User;
+import com.ixvil.android.BoxBonus.R;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -1,9 +1,8 @@
-package com.example.android.materialdesigncodelab;
+package com.ixvil.android.BoxBonus;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.StringBuilderPrinter;
 
 /**
  * Created by ixvil on 02.12.2016.

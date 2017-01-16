@@ -1,9 +1,5 @@
-package com.example.android.materialdesigncodelab.Entities;
+package com.ixvil.android.BoxBonus.Entities;
 
-import android.app.Application;
-import android.view.LayoutInflater;
-
-import com.example.android.materialdesigncodelab.R;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 
@@ -74,6 +70,9 @@ public class News extends AbstractEntity<News> {
         return name;
     }
 
+    /**
+     * @param name Имя
+     */
     public void setName(String name) {
         this.name = name;
     }

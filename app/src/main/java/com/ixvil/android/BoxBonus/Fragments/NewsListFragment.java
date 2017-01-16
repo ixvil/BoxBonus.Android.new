@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.materialdesigncodelab.Fragments;
+package com.ixvil.android.BoxBonus.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -28,22 +28,20 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.android.materialdesigncodelab.Activities.DetailActivity;
-import com.example.android.materialdesigncodelab.Activities.GiftDetailActivity;
-import com.example.android.materialdesigncodelab.Adapters.AbstractFragmentContentAdapter;
-import com.example.android.materialdesigncodelab.Models.Gift;
-import com.example.android.materialdesigncodelab.R;
+import com.ixvil.android.BoxBonus.Activities.NewsDetailActivity;
+import com.ixvil.android.BoxBonus.Adapters.AbstractFragmentContentAdapter;
+import com.ixvil.android.BoxBonus.Entities.News;
+import com.ixvil.android.BoxBonus.Models.NewsModel;
+import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonNull;
-import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;
 
 /**
- * Provides UI for the view with Tile.
+ * Provides UI for the view with List.
  */
-public class GiftsListFragment extends Fragment implements FetchSuccessFragmentInterface {
+public class NewsListFragment extends Fragment implements FetchSuccessFragmentInterface {
 
-    private GiftAdapter contentAdapter;
+    private NewsAdapter contentAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -51,20 +49,20 @@ public class GiftsListFragment extends Fragment implements FetchSuccessFragmentI
         RecyclerView recyclerView = (RecyclerView) inflater.inflate(
                 R.layout.recycler_view, container, false);
 
-        contentAdapter = new GiftAdapter(recyclerView.getContext());
+        contentAdapter = new NewsAdapter(recyclerView.getContext());
         recyclerView.setAdapter(contentAdapter);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        Gift.getFromNet(inflater.getContext(), this);
+        NewsModel.getFromNet(inflater.getContext(), this);
 
         return recyclerView;
     }
 
     @Override
     public void onFetchSuccess(JsonArray jsonArray) {
-        Gift.setGifts(jsonArray);
-        contentAdapter.updateAdapter(jsonArray);
+        NewsModel.setNews(jsonArray);
+        contentAdapter.updateAdapter(NewsModel.getNews());
         contentAdapter.notifyDataSetChanged();
     }
 
@@ -72,55 +70,57 @@ public class GiftsListFragment extends Fragment implements FetchSuccessFragmentI
         public ImageView picture;
         public TextView name;
         public TextView id;
+        public TextView desc;
 
         public ViewHolder(LayoutInflater inflater, ViewGroup parent) {
-            super(inflater.inflate(R.layout.item_tile, parent, false));
-            picture = (ImageView) itemView.findViewById(R.id.tile_picture);
-            name = (TextView) itemView.findViewById(R.id.tile_title);
-            id = (TextView) itemView.findViewById(R.id.tile_id);
+            super(inflater.inflate(R.layout.item_list, parent, false));
+            picture = (ImageView) itemView.findViewById(R.id.list_avatar);
+            name = (TextView) itemView.findViewById(R.id.list_title);
+            desc = (TextView) itemView.findViewById(R.id.list_desc);
+            id = (TextView) itemView.findViewById(R.id.list_id);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
-                    Intent intent = new Intent(context, GiftDetailActivity.class);
-                    intent.putExtra(GiftDetailActivity.EXTRA_POSITION, id.getText());
+                    Intent intent = new Intent(context, NewsDetailActivity.class);
+                    intent.putExtra(NewsDetailActivity.EXTRA_POSITION, id.getText());
                     context.startActivity(intent);
                 }
             });
         }
     }
 
-    class GiftAdapter extends AbstractFragmentContentAdapter<ViewHolder> {
+    class NewsAdapter extends AbstractFragmentContentAdapter<ViewHolder> {
 
-        GiftAdapter(Context context) {
+        NewsAdapter(Context context) {
             super(context);
         }
 
+        public void updateAdapter(News[] news) {
+            mIds = new String[news.length];
+            mGifts = new String[news.length];
+            mGiftsPictures = new String[news.length];
+            mDescriptions = new String[news.length];
+            for (int i = 0; i < news.length; i++) {
+                mGifts[i] = news[i].getName();
+                mIds[i] = String.valueOf(news[i].getId());
+                mGiftsPictures[i] = news[i].getLogo();
+                mDescriptions[i] = news[i].getDescription();
+            }
+            setLength(news.length);
+        }
+
+        /**
+         * @deprecated
+         */
         @Override
         public void updateAdapter(JsonArray jsonObject) {
-            mIds = new String[jsonObject.size()];
-            mGifts = new String[jsonObject.size()];
-            mGiftsPictures = new String[jsonObject.size()];
 
-            for (int i = 0; i < jsonObject.size(); i++) {
-                JsonObject obj = (JsonObject) jsonObject.get(i);
-                JsonObject partnerAttributes = (JsonObject) obj.get("attributes");
-                mGifts[i] = partnerAttributes.get("name").getAsString();
-                mIds[i] = obj.get("id").getAsString();
-
-                if (partnerAttributes.get("logo") instanceof JsonNull) {
-                    mGiftsPictures[i] = null;
-                } else {
-                    mGiftsPictures[i] = innerContext.getString(R.string.image_url_prefix) + partnerAttributes.get("logo").getAsString();
-                }
-            }
-
-            setLength(jsonObject.size());
         }
 
         @Override
-        public GiftsListFragment.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            return new GiftsListFragment.ViewHolder(LayoutInflater.from(parent.getContext()), parent);
+        public NewsListFragment.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            return new NewsListFragment.ViewHolder(LayoutInflater.from(parent.getContext()), parent);
         }
 
         @Override
@@ -128,8 +128,10 @@ public class GiftsListFragment extends Fragment implements FetchSuccessFragmentI
             holder.name.setText(mGifts[position]);
             Ion.with(holder.picture)
                     .placeholder(R.drawable.a)
-                    .load(mGiftsPictures[position]);
+                    .load(getContext().getString(R.string.image_url_prefix) + mGiftsPictures[position]);
+            holder.desc.setText(mDescriptions[position]);
             holder.id.setText(mIds[position]);
         }
     }
+
 }

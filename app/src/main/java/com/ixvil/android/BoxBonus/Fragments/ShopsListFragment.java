@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.example.android.materialdesigncodelab.Fragments;
+package com.ixvil.android.BoxBonus.Fragments;
 
 import android.content.Context;
 import android.content.Intent;
@@ -32,10 +32,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.materialdesigncodelab.Activities.DetailActivity;
-import com.example.android.materialdesigncodelab.Adapters.AbstractFragmentContentAdapter;
-import com.example.android.materialdesigncodelab.Models.Shop;
-import com.example.android.materialdesigncodelab.R;
+import com.ixvil.android.BoxBonus.Activities.DetailActivity;
+import com.ixvil.android.BoxBonus.Adapters.AbstractFragmentContentAdapter;
+import com.ixvil.android.BoxBonus.Models.Shop;
+import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;

@@ -1,4 +1,4 @@
-package com.example.android.materialdesigncodelab.Models;
+package com.ixvil.android.BoxBonus.Models;
 
 import android.graphics.Bitmap;
 

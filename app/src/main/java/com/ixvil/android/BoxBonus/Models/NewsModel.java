@@ -1,13 +1,13 @@
-package com.example.android.materialdesigncodelab.Models;
+package com.ixvil.android.BoxBonus.Models;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.widget.Toast;
 
-import com.example.android.materialdesigncodelab.Entities.News;
-import com.example.android.materialdesigncodelab.Fragments.FetchSuccessFragmentInterface;
-import com.example.android.materialdesigncodelab.R;
+import com.ixvil.android.BoxBonus.Entities.News;
+import com.ixvil.android.BoxBonus.Fragments.FetchSuccessFragmentInterface;
+import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;

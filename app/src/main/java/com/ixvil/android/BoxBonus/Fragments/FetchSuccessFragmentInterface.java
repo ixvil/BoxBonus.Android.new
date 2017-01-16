@@ -1,4 +1,4 @@
-package com.example.android.materialdesigncodelab.Fragments;
+package com.ixvil.android.BoxBonus.Fragments;
 
 import com.google.gson.JsonArray;
 

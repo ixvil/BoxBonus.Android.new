@@ -1,4 +1,4 @@
-package com.example.android.materialdesigncodelab.Entities;
+package com.ixvil.android.BoxBonus.Entities;
 
 import com.google.gson.JsonObject;
 

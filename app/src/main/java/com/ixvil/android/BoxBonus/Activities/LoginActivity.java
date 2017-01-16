@@ -1,4 +1,4 @@
-package com.example.android.materialdesigncodelab.Activities;
+package com.ixvil.android.BoxBonus.Activities;
 
 import android.annotation.TargetApi;
 import android.app.ProgressDialog;
@@ -14,14 +14,14 @@ import android.text.TextWatcher;
 import android.util.Log;
 
 import android.content.Intent;
-import com.example.android.materialdesigncodelab.Models.User;
+import com.ixvil.android.BoxBonus.Models.User;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.materialdesigncodelab.R;
+import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;

@@ -1,4 +1,4 @@
-package com.example.android.materialdesigncodelab.Activities;
+package com.ixvil.android.BoxBonus.Activities;
 
 import android.annotation.TargetApi;
 
@@ -17,8 +17,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.android.materialdesigncodelab.Models.User;
-import com.example.android.materialdesigncodelab.R;
+import com.ixvil.android.BoxBonus.Models.User;
+import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -160,13 +160,13 @@ public class SignupActivity extends AppCompatActivity {
                                     onSignupFailed(userJson.get("message").getAsString());
                                 }
                             } else {
-                                onSignupFailed(e.getMessage().toString());
+                                onSignupFailed(e.getMessage());
                             }
                         }
 
                     });
         } catch (Exception e) {
-            onSignupFailed(e.getMessage().toString());
+            onSignupFailed(e.getMessage());
         }
     }
 
