@@ -6,7 +6,7 @@ import com.google.gson.JsonObject;
  * Created by ixvil on 05.01.2017.
  */
 
-abstract class AbstractEntity<E> {
+public abstract class AbstractEntity<E> {
     private int id;
 
     public int getId() {

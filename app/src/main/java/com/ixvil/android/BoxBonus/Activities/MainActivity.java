@@ -41,7 +41,7 @@ import android.view.MenuItem;
 import com.ixvil.android.BoxBonus.Fragments.ShopsListFragment;
 import com.ixvil.android.BoxBonus.Fragments.HomeFragment;
 import com.ixvil.android.BoxBonus.Fragments.NewsListFragment;
-import com.ixvil.android.BoxBonus.Models.Gift;
+import com.ixvil.android.BoxBonus.Models.GiftsModel;
 import com.ixvil.android.BoxBonus.Models.NewsModel;
 import com.ixvil.android.BoxBonus.Models.User;
 import com.ixvil.android.BoxBonus.R;
@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements HomeFragment.OnFr
 //            }
 //        });
         NewsModel.getFromNet(getApplicationContext());
-        Gift.getFromNet(getApplicationContext());
+        GiftsModel.getFromNet(getApplicationContext());
     }
 
     // Add Fragments to Tabs

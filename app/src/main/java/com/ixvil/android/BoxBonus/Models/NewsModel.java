@@ -20,8 +20,7 @@ import java.util.Objects;
  * Created by ixvil on 05.01.2017.
  */
 
-public class NewsModel {
-    private static News[] news;
+public class NewsModel extends AbstractModel{
 
     public static void getFromNet(Context applicationContext) {
         getFromNet(applicationContext, null);
@@ -64,23 +63,24 @@ public class NewsModel {
     }
 
     private static void onFetchSuccess(JsonArray newsJson) {
-        setNews(newsJson);
+
+        setEntities(newsJson);
     }
 
 
-    public static void setNews(JsonArray newsJson) {
-        news = new News[newsJson.size()];
+    public static void setEntities(JsonArray newsJson) {
+        entities = new News[newsJson.size()];
         int i = 0;
         for (JsonElement oneElement : newsJson) {
             JsonObject oneObject = (JsonObject) oneElement;
             News one = (new News()).factory(oneObject);
-            news[i] = one;
+            entities[i] = one;
             i++;
         }
     }
 
     public static News[] getNews() {
-        return news;
+        return (News[]) entities;
     }
 
     @TargetApi(Build.VERSION_CODES.KITKAT)

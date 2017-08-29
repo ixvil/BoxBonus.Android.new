@@ -40,9 +40,9 @@
     <string name="tab_title_sing_out">Выход</string>
     <string name="default_name">Иван Иванович</string>
     <string name="default_phone">+7 (909) 123 4567</string>
-    <string name="hostname">http://35.164.20.49/</string>
+    <string name="hostname">http://boxbonus.ixvil.ru/</string>
     <string name="auth_error">Ошибка авторизации</string>
-    <string name="image_url_prefix">http://35.164.20.49/uploads/</string>
+    <string name="image_url_prefix">http://boxbonus.ixvil.ru/uploads/</string>
     <string name="activity_detail_description">Описание</string>
     <string name="activity_detail_location">Адрес</string>
     <string name="activity_detail_gifts">Подарки</string>

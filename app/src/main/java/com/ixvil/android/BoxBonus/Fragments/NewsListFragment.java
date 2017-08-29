@@ -61,7 +61,7 @@ public class NewsListFragment extends Fragment implements FetchSuccessFragmentIn
 
     @Override
     public void onFetchSuccess(JsonArray jsonArray) {
-        NewsModel.setNews(jsonArray);
+        NewsModel.setEntities(jsonArray);
         contentAdapter.updateAdapter(NewsModel.getNews());
         contentAdapter.notifyDataSetChanged();
     }

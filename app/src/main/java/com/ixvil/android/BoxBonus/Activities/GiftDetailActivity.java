@@ -24,7 +24,8 @@ import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.ixvil.android.BoxBonus.Models.Gift;
+import com.ixvil.android.BoxBonus.Entities.Gift;
+import com.ixvil.android.BoxBonus.Models.GiftsModel;
 import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
@@ -49,44 +50,37 @@ public class GiftDetailActivity extends AppCompatActivity {
                 (CollapsingToolbarLayout) findViewById(R.id.collapsing_toolbar);
         // collapsingToolbar.setTitle(getString(R.string.item_title));
 
-//        int position = getIntent().getIntExtra(EXTRA_POSITION, 0);
         String position = getIntent().getStringExtra(EXTRA_POSITION);
 
-        if (Gift.gifts == null) {
+        if (GiftsModel.entities == null) {
             throw new RuntimeException("No shops");
         }
 
-        JsonObject obj = Gift.getGiftById(position);
-        fillGift(collapsingToolbar, obj);
+        Gift gift = GiftsModel.getGiftById(position);
+        fillGift(collapsingToolbar, gift);
     }
 
-    private void fillGift(CollapsingToolbarLayout collapsingToolbar, JsonObject obj) {
-        if (obj == null) {
+    private void fillGift(CollapsingToolbarLayout collapsingToolbar, Gift gift) {
+        if (gift == null) {
             throw new RuntimeException("No such gift");
         }
 
-        JsonObject partnerAttributes = (JsonObject) obj.get("attributes");
+        collapsingToolbar.setTitle(gift.getName());
 
-        Resources resources = getResources();
-        collapsingToolbar.setTitle(partnerAttributes.get("name").getAsString());
-
-
-        if (!(partnerAttributes.get("description") instanceof JsonNull)) {
+        if (gift.getDescription() != null) {
             TextView placeDetail = (TextView) findViewById(R.id.place_detail);
-            placeDetail.setText(partnerAttributes.get("description").getAsString());
+            placeDetail.setText(gift.getDescription());
         }
 
-//        TextView placeLocation = (TextView) findViewById(R.id.place_location);
-
-        if (!(partnerAttributes.get("logo") instanceof JsonNull)) {
+        if (gift.getLogo() != null) {
             ImageView placePicture = (ImageView) findViewById(R.id.image);
             Ion.with(placePicture)
                     .placeholder(R.drawable.a)
                     .load(getApplicationContext().getString(R.string.image_url_prefix)
-                            + partnerAttributes.get("logo").getAsString()
+                            + gift.getLogo()
                     );
         }
-        int id = (int) obj.get("id").getAsInt();
+        int id = gift.getId();
     }
 
 }

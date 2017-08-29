@@ -30,7 +30,7 @@ import android.widget.TextView;
 
 import com.ixvil.android.BoxBonus.Activities.GiftDetailActivity;
 import com.ixvil.android.BoxBonus.Adapters.AbstractFragmentContentAdapter;
-import com.ixvil.android.BoxBonus.Models.Gift;
+import com.ixvil.android.BoxBonus.Models.GiftsModel;
 import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonNull;
@@ -55,14 +55,14 @@ public class GiftsListFragment extends Fragment implements FetchSuccessFragmentI
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        Gift.getFromNet(inflater.getContext(), this);
+        GiftsModel.getFromNet(inflater.getContext(), this);
 
         return recyclerView;
     }
 
     @Override
     public void onFetchSuccess(JsonArray jsonArray) {
-        Gift.setGifts(jsonArray);
+        GiftsModel.setEntities(jsonArray);
         contentAdapter.updateAdapter(jsonArray);
         contentAdapter.notifyDataSetChanged();
     }
@@ -82,7 +82,7 @@ public class GiftsListFragment extends Fragment implements FetchSuccessFragmentI
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, GiftDetailActivity.class);
-                    intent.putExtra(GiftDetailActivity.EXTRA_POSITION, id.getText());
+                    intent.putExtra(GiftDetailActivity.EXTRA_POSITION, id.getText().toString());
                     context.startActivity(intent);
                 }
             });

@@ -16,25 +16,31 @@
 
 package com.ixvil.android.BoxBonus.Activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 
-import com.ixvil.android.BoxBonus.Models.Gift;
+import com.ixvil.android.BoxBonus.Entities.Gift;
+import com.ixvil.android.BoxBonus.Models.GiftsModel;
 import com.ixvil.android.BoxBonus.Models.Shop;
 import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.koushikdutta.ion.Ion;
+
+import java.util.ArrayList;
 
 /**
  * Provides UI for the Detail page with Collapsing Toolbar.
@@ -100,37 +106,43 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void getGifts(int id) {
-        JsonArray gifts = Gift.getGiftsForShop(id);
+        ArrayList<Gift> gifts = GiftsModel.getGiftByPartnerId(id);
         if (gifts == null) {
             return;
         }
         LinearLayout giftsList = (LinearLayout) findViewById(R.id.gifts_list);
-        for (JsonElement gift : gifts) {
-            RelativeLayout giftView = getGiftView((JsonObject) gift);
+        for (Gift gift : gifts) {
+            RelativeLayout giftView = getGiftView(gift);
             giftsList.addView(giftView);
         }
 
     }
 
-    private RelativeLayout getGiftView(JsonObject gift) {
+    private RelativeLayout getGiftView(final Gift gift) {
         LayoutInflater inflater = getLayoutInflater();
         RelativeLayout relativeLayout = (RelativeLayout) inflater.inflate(R.layout.item_tile, null);
 
-        JsonObject giftAttributes = (JsonObject) gift.get("attributes");
-
-
         TextView tileTitle = (TextView) relativeLayout.findViewById(R.id.tile_title);
-        tileTitle.setText(giftAttributes.get("name").getAsString());
+        tileTitle.setText(gift.getName());
 
-
-        if (!giftAttributes.get("logo").isJsonNull()) {
-            String logo = giftAttributes.get("logo").getAsString();
+        if (gift.getLogo() != null) {
+            String logo = gift.getLogo();
             ImageView tilePicture = (ImageView) relativeLayout.findViewById(R.id.tile_picture);
             Ion.with(tilePicture)
                     .placeholder(R.drawable.a)
                     .load(getApplicationContext().getString(R.string.image_url_prefix) + logo);
             ;
         }
+
+        relativeLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = v.getContext();
+                Intent intent = new Intent(context, GiftDetailActivity.class);
+                intent.putExtra(GiftDetailActivity.EXTRA_POSITION, String.valueOf(gift.getId()));
+                context.startActivity(intent);
+            }
+        });
 
         return relativeLayout;
     }

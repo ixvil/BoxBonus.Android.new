@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Build;
 import android.widget.Toast;
 
+import com.ixvil.android.BoxBonus.Entities.Gift;
+import com.ixvil.android.BoxBonus.Entities.News;
 import com.ixvil.android.BoxBonus.Fragments.FetchSuccessFragmentInterface;
 import com.ixvil.android.BoxBonus.R;
 import com.google.gson.JsonArray;
@@ -13,62 +15,48 @@ import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 /**
  * Created by ixvil on 02.01.2017.
  */
 
-public class Gift {
-    public static JsonArray[] gifts;
+public class GiftsModel extends AbstractModel {
 
-    public static void setGifts(JsonArray jsonGifts) {
-
-        if (Shop.shops != null) {
-            gifts = new JsonArray[Shop.shops.size() * 5];
-            //TODO:: really full fun
-        } else {
-            gifts = new JsonArray[1000];
-            //TODO:: What a fun ?
+    public static void setEntities(JsonArray giftsJson) {
+        entities = new Gift[giftsJson.size()];
+        int i = 0;
+        for (JsonElement oneElement : giftsJson) {
+            JsonObject oneObject = (JsonObject) oneElement;
+            Gift one = (new Gift()).factory(oneObject);
+            entities[i] = one;
+            i++;
         }
-
-        for (int i = 0; i < jsonGifts.size(); i++) {
-            JsonObject gift = (JsonObject) jsonGifts.get(i);
-            JsonObject giftAttributes = (JsonObject) gift.get("attributes");
-            JsonObject partner = (JsonObject) giftAttributes.get("partner");
-            int partnerId = partner.get("id").getAsInt();
-            if (gifts[partnerId] == null) {
-                gifts[partnerId] = new JsonArray();
-            }
-            gifts[partnerId].add(gift);
-        }
-
-
     }
 
-    public static JsonObject getGiftById(String id) {
-        for (JsonArray giftsArray : gifts) {
-            if (giftsArray != null) {
-                for (JsonElement element : giftsArray) {
-                    JsonObject object = (JsonObject) element;
-                    if (object.get("id").getAsString().equals(id)) {
-                        return object;
-                    }
+    public static Gift getGiftById(String id) {
+        for (Gift gift : (Gift[]) entities) {
+            if (gift != null) {
+                if (gift.getId() == Integer.parseInt(id)) {
+                    return gift;
                 }
             }
         }
         return null;
     }
 
-    public static JsonArray getGiftsForShop(int id) {
-        if (null == gifts) {
-            return null;
-        }
-        if (null == gifts[id]) {
-            return null;
-        }
+    public static ArrayList<Gift> getGiftByPartnerId(int partnerId) {
+        ArrayList<Gift> gifts = new ArrayList<>();
 
-        return gifts[id];
+        for (Gift gift : (Gift[]) entities) {
+            if (gift != null) {
+                if (gift.getPartnerId() == partnerId) {
+                    gifts.add(gift);
+                }
+            }
+        }
+        return gifts;
     }
 
     public static void getFromNet(final Context context) {
@@ -105,8 +93,9 @@ public class Gift {
     }
 
     private static void onFetchSuccess(JsonArray giftsJson) {
-        Gift.setGifts(giftsJson);
+        GiftsModel.setEntities(giftsJson);
     }
+
 
     @TargetApi(Build.VERSION_CODES.KITKAT)
     private static void onFetchFailed(String message, Context context) {

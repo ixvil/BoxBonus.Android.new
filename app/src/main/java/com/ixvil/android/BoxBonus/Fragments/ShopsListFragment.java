@@ -45,6 +45,8 @@ import java.io.IOException;
 
 /**
  * Provides UI for the view with Cards.
+ *
+ * @deprecated TODO: 23.08.2017 refactor and create entity
  */
 public class ShopsListFragment extends Fragment {
 
