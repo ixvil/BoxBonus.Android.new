@@ -27,20 +27,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
-import butterknife.Bind;
+import butterknife.BindView;
 
 public class SignupActivity extends AppCompatActivity {
     private static final String TAG = "SignupActivity";
 
-    @Bind(R.id.input_mobile)
+    @BindView(R.id.input_mobile)
     EditText _mobileText;
-    @Bind(R.id.input_password)
+    @BindView(R.id.input_password)
     EditText _passwordText;
-    @Bind(R.id.input_reEnterPassword)
+    @BindView(R.id.input_reEnterPassword)
     EditText _reEnterPasswordText;
-    @Bind(R.id.btn_signup)
+    @BindView(R.id.btn_signup)
     Button _signupButton;
-    @Bind(R.id.link_login)
+    @BindView(R.id.link_login)
     TextView _loginLink;
 
     @Override
